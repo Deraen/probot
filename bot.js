@@ -24,7 +24,7 @@ setInterval(function () {
   var opts = {cwd: path.resolve(__dirname, config.repo)};
   exec('git fetch', opts, function () {
     exec('git reset --hard origin/master', opts, function () {
-      buffer.each(function (foo) {
+      buffer.forEach(function (foo) {
         fs.appendFile(config.repo + '/hours.tsv', foo.date + '\t' + foo.duration + '\t' + foo.category + '\t' + foo.participants.join(',') + '\t' + foo.summary + '\n', cb);
       });
     });
