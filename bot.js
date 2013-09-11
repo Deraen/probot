@@ -74,7 +74,7 @@ var commands = {
 
       var opts = {cwd: path.resolve(__dirname, config.repo)};
       exec('git fetch', opts, function () {
-        exec('git reset --hard HEAD', opts, function () {
+        exec('git reset --hard origin/master', opts, function () {
           fs.appendFile(config.repo + '/hours.csv', date + '\t' + duration + '\t' + category + '\t' + participants.join(',') + '\t' + summary + '\n', function () {
             exec('git add hours.csv', opts, function () {
               exec('git commit -m Task.', opts, function () {
