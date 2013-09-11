@@ -12,7 +12,7 @@ var config = require('./config.js');
 var buffer = [];
 setInterval(function () {
   var cb = _.after(buffer.length, function () {
-    exec('git add hours.csv', opts, function () {
+    exec('git add hours.tsv', opts, function () {
       exec('git commit -m Task.', opts, function () {
         exec('git push', opts, function () {
         });
@@ -25,7 +25,7 @@ setInterval(function () {
   exec('git fetch', opts, function () {
     exec('git reset --hard origin/master', opts, function () {
       buffer.each(function (foo) {
-        fs.appendFile(config.repo + '/hours.csv', foo.date + '\t' + foo.duration + '\t' + foo.category + '\t' + foo.participants.join(',') + '\t' + foo.summary + '\n', cb);
+        fs.appendFile(config.repo + '/hours.tsv', foo.date + '\t' + foo.duration + '\t' + foo.category + '\t' + foo.participants.join(',') + '\t' + foo.summary + '\n', cb);
       });
     });
   });
