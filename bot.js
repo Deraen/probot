@@ -9,6 +9,28 @@ var config = require('./config.js');
 
 // --
 
+var buffer = [];
+setInterval(function () {
+  var cb = _.after(buffer.length, function () {
+    exec('git add hours.csv', opts, function () {
+      exec('git commit -m Task.', opts, function () {
+        exec('git push', opts, function () {
+        });
+      });
+    });
+    buffer.length = 0;
+  });
+
+  var opts = {cwd: path.resolve(__dirname, config.repo)};
+  exec('git fetch', opts, function () {
+    exec('git reset --hard origin/master', opts, function () {
+      buffer.each(function (foo) {
+        fs.appendFile(config.repo + '/hours.csv', foo.date + '\t' + foo.duration + '\t' + foo.category + '\t' + foo.participants.join(',') + '\t' + foo.summary + '\n', cb);
+      });
+    });
+  });
+}, 60 /* sec */ * 1000);
+
 var client = new irc.Client(config.server, config.nick, {
   channels: [config.channel]
 });
@@ -72,19 +94,7 @@ var commands = {
     if (errors.length === 0) {
       say('++ ' + date + ' - ' + duration + ' tuntia. Kategoria ' + category + '. Osallisina ' + participants.join(', ') + '. Viesti: ' + summary + '.');
 
-      var opts = {cwd: path.resolve(__dirname, config.repo)};
-      exec('git fetch', opts, function () {
-        exec('git reset --hard origin/master', opts, function () {
-          fs.appendFile(config.repo + '/hours.csv', date + '\t' + duration + '\t' + category + '\t' + participants.join(',') + '\t' + summary + '\n', function () {
-            exec('git add hours.csv', opts, function () {
-              exec('git commit -m Task.', opts, function () {
-                exec('git push', opts, function () {
-                });
-              });
-            });
-          });
-        });
-      });
+      buffer.push({date: date, duration: duration, category: category, participants: participants, summary: summary});
     } else {
       say('Virhe. ' + errors.join('. '));
     }
