@@ -103,6 +103,7 @@ var commands = {
     say(
 'HELP: \n' +
 'DURATION: Kesto tunteina. Voi olla liukuluku. Perään voi merkitä h. esim. 2, 3.5h, 10, 15h\n' +
+'Kategoriat: Documentation (DOC), Requirements gathering (REQ), Design (DES), Implementation (IMP), Testing (TEST), Meetings (MEET), Teaching (TEA), and Other (OTH)\n' +
 '!add [--users user1[,user2]] [--date DD.MM.YYYY] [' + config.categories.join('|') + '] DURATION And a summary for a task.\n')
   }
 };
