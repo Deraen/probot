@@ -86,7 +86,7 @@ var commands = {
     }
 
     // Summary
-    var summary = args._.join(' ');
+    var summary = args._.join(' ').replace(/�/g, 'ö').replace(/�/g, 'ä');
     if (summary.length <= 0) {
       errors.push('Ei kuvausta');
     }
