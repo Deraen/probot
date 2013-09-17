@@ -4,28 +4,40 @@ var irc = require('irc');
 var _ = require('lodash');
 var optimist = require('optimist');
 var moment = require('moment');
+var async = require('async');
 var exec = require('child_process').exec;
 var config = require('./config.js');
 
 // --
+var tasksBuffer = [];
+var run = function (cmd) {
+  return function (cb) {
+    exec(cmd, {cwd: path.resolve(__dirname, config.repo)}, cb);
+  };
+};
+var addFile = function (task, cb) {
+  fs.appendFile(config.repo + '/hours.tsv', task.date + '\t' + task.duration + '\t' + task.category + '\t' + task.participants.join(',') + '\t' + task.summary + '\n', cb);
+};
 
-var buffer = [];
+// Write tasks once a minute from buffer to git
 setInterval(function () {
-  var cb = _.after(buffer.length, function () {
-    exec('git add hours.tsv', opts, function () {
-      exec('git commit -m Task.', opts, function () {
-        exec('git push', opts, function () {
-        });
-      });
-    });
-    buffer.length = 0;
-  });
-
-  var opts = {cwd: path.resolve(__dirname, config.repo)};
-  exec('git fetch', opts, function () {
-    exec('git reset --hard origin/master', opts, function () {
-      buffer.forEach(function (foo) {
-        fs.appendFile(config.repo + '/hours.tsv', foo.date + '\t' + foo.duration + '\t' + foo.category + '\t' + foo.participants.join(',') + '\t' + foo.summary + '\n', cb);
+  // Fetch latest git version
+  async.series([
+    run('git fetch'),
+    run('git reset --hard origin/master')
+  ], function () {
+    // Add each new task from buffer
+    async.each(tasksBuffer, addFile, function () {
+      // After all tasks are writter to file, commit tasks to git
+      async.series([
+        run('git add hours.tsv'),
+        run('git commit -m Task.'),
+        run('git push')
+      ], function () {
+        // If all commands are run successfully, clear buffer
+        // In theory if any git command returns error (eg. no network -> push fails)
+        // buffer is not cleared
+        tasksBuffer.length = 0;
       });
     });
   });
@@ -94,7 +106,7 @@ var commands = {
     if (errors.length === 0) {
       say('++ ' + date + ' - ' + duration + ' tuntia. Kategoria ' + category + '. Osallisina ' + participants.join(', ') + '. Viesti: ' + summary + '.');
 
-      buffer.push({date: date, duration: duration, category: category, participants: participants, summary: summary});
+      tasksBuffer.push({date: date, duration: duration, category: category, participants: participants, summary: summary});
     } else {
       say('Virhe. ' + errors.join('. '));
     }
@@ -110,9 +122,8 @@ var commands = {
 
 client.addListener('message' + config.channel, function (from, message) {
   var split = message.replace(/[\s\n\r]+/g, ' ').split(' ');
-  for (var command in commands) {
-    if ('!' + command === _.first(split)) {
-      commands[command](from, _.rest(split));
-    }
+  var cmd = _.first(split);
+  if (cmd.length > 0 && cmd[0] == '!' && _.has(commands, cmd.substr(1))) {
+    commands[cmd.substr(1)](from, _.rest(split));
   }
 });
