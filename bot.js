@@ -86,7 +86,7 @@ var commands = {
     }
 
     // Summary
-    var summary = args._.join(' ').replace(/�/g, 'ö').replace(/�/g, 'ä');
+    var summary = args._.join(' ').replace(/�/g, 'ö').replace(/�/g, 'ä').replace(/�/g, 'Ä').replace(/�/g, 'Ö');
     if (summary.length <= 0) {
       errors.push('Ei kuvausta');
     }
@@ -103,6 +103,7 @@ var commands = {
     say(
 'HELP: \n' +
 'DURATION: Kesto tunteina. Voi olla liukuluku. Perään voi merkitä h. esim. 2, 3.5h, 10, 15h\n' +
+'Kategoriat: Documentation (DOC), Requirements gathering (REQ), Design (DES), Implementation (IMP), Testing (TEST), Meetings (MEET), Teaching (TEA), and Other (OTH)\n' +
 '!add [--users user1[,user2]] [--date DD.MM.YYYY] [' + config.categories.join('|') + '] DURATION And a summary for a task.\n')
   }
 };
