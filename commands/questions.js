@@ -32,7 +32,7 @@ exports.ask = function (from, msg, cb) {
   var id = ++q_id;
   var question = lib.fixCharsetFuckUps(args._.join(' '));
   if (question.length <= 0) {
-    cb('Ei kysymystä');
+    return cb('Ei kysymystä');
   }
 
   git.append('questions.tsv', 'ask\t' + id + '\t' + question + '\n');
@@ -48,7 +48,7 @@ exports.answer = function (from, msg, cb) {
 
   var answer = lib.fixCharsetFuckUps(args._.join(' '));
   if (answer.length <= 0) {
-    cb('Ei vastausta.');
+    return cb('Ei vastausta.');
   }
 
   git.append('questions.tsv', 'ans\t' + answer);
