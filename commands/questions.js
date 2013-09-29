@@ -19,9 +19,9 @@ var q_id = 0;
 fs.readFile(config.repo + '/questions.tsv', {encoding: 'UTF-8'}, function (err, data) {
   if (err || !data) data = '';
   var lines = data.split('\n');
-  lines = _.map(lines, function (l) { l.split('\t'); });
-  var q_id = _.reduce(lines, function (result, val) {
-    if (val >= result) result = val;
+  lines = _.map(lines, function (l) { return l.split('\t'); });
+  q_id = _.reduce(lines, function (result, val) {
+    if (parseInt(val[1]) >= result) result = parseInt(val[1]);
     return result;
   }, q_id);
 });
@@ -51,7 +51,7 @@ exports.answer = function (from, msg, cb) {
     return cb('Ei vastausta.');
   }
 
-  git.append('questions.tsv', 'ans\t' + answer);
+  git.append('questions.tsv', 'ans\t' + id + '\t' + answer + '\n');
 
   cb(null, '== ' + answer);
 };

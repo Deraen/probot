@@ -28,7 +28,7 @@ function start() {
       async.series(buffer, function () {
         // After all tasks are writter to file, commit tasks to git
         async.series([
-          run('git commit -a -m ProjectBot!'),
+          run('git commit -a -m ProjectBot\!'),
           run('git push')
         ], function () {
           // If all commands are run successfully, clear buffer
