@@ -29,7 +29,7 @@ function start() {
         // After all tasks are writter to file, commit tasks to git
         async.series([
           run('git commit -a -m ProjectBot!'),
-          // run('git push')
+          run('git push')
         ], function () {
           // If all commands are run successfully, clear buffer
           // In theory if any git command returns error (eg. no network -> push fails)
