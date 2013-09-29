@@ -9,3 +9,7 @@ exports.applyAliases = function (name) {
   }
   return name;
 };
+
+exports.fixCharsetFuckUps = function(str) {
+  return str.replace(/�/g, 'ö').replace(/�/g, 'ä').replace(/�/g, 'Ä').replace(/�/g, 'Ö');
+};

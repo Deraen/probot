@@ -1,13 +1,11 @@
 var _ = require('lodash');
 
 var config = require('../config');
-var say = require('../say');
 
 var helps = [];
 
-var print = function () {
-  say('Ohjeet:');
-  _.each(helps, say);
+var print = function (from, msg, cb) {
+  cb(null, helps);
 };
 
 print.register = function (main) {
