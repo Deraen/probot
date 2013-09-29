@@ -10,7 +10,7 @@ var commands = require('./commands');
 
 function cb(err, msg) {
   if (err) {
-    client.say(config.channel, err);
+    client.say(config.channel, 'Virhe: ' + err);
   } else {
     if (_.isArray(msg)) {
       _.each(msg, function (l) { client.say(config.channel, l); });
