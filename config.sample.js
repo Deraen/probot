@@ -3,6 +3,7 @@ exports.nick = 'Fooo';
 exports.channel = '#test';
 exports.repo = 'foo';
 exports.users = {
+  'All', ['nick1', 'nick2'],
   'Realname': ['nick1', 'nick2']
 };
 exports.categories = {
